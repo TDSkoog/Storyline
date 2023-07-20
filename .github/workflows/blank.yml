@@ -1,0 +1,29 @@
+// Get the user's response from Layer 2 (ResourceResponse)
+var userResponse = ResourceResponse.Text;
+
+// Set the initial response to show "Thinking..."
+SetVariable("ChatbotResponse", "Thinking...");
+
+// Send the user's response to ChatGBT API
+ChatGBT.query({
+  key: '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',
+  message: userResponse,
+  success: function(chatbotResponse) {
+    // Check intent
+    if (chatbotResponse.intent == "affirm") {
+      // User confirmed knowing where to find the resources
+      SetVariable("ChatbotResponse", "That's great!");
+    } else if (chatbotResponse.intent == "deny") {
+      // User denied knowing where to find the resources
+      SetVariable("ChatbotResponse", "No problem, here is the link to the Operations Management & Field Support Recruiting Process: https://hmsglobal.sharepoint.com/sites/humanresources/SitePages/Manager%20and%20Above%20Recruiting.aspx");
+    } else {
+      // Unrecognized intent or general response
+      SetVariable("ChatbotResponse", "I'm here to help! Please let me know if you need any assistance.");
+    }
+  },
+  error: function(error) {
+    console.error("Error in ChatGBT API call:", error);
+    // Show an error message if needed
+    SetVariable("ChatbotResponse", "Sorry, there was an error. Please try again later.");
+  }
+});
